@@ -107,6 +107,7 @@ ipython_config.py
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+.idea/
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
@@ -342,3 +343,5 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,virtualenv,jupyternotebooks,images,pycharm
+
+api/try.py
