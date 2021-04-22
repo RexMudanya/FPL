@@ -59,3 +59,26 @@ class Player:
 		:rtype: dict
 		"""
 		return self.get_all_data(player_id)["history"][int(game_week - 1)]
+
+	def get_fixtures(self):
+		pass
+
+	def get_past_history(self):
+		pass
+
+
+class Viz:
+	"""
+	methods to plot various player data
+	"""
+	def __init__(self, url=None):
+		self.player = Player(url)
+
+	def plot_value(self):
+		pass
+
+	def plot_points(self):
+		pass
+
+	def plot_transfer_history(self):
+		pass
