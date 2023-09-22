@@ -1,6 +1,7 @@
 numpy
 pandas
 requests
-sklearn
+scikit-learn
 matplotlib
 jupyter
+ipykernel
