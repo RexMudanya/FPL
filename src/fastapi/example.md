@@ -1,0 +1,1 @@
+```commandline curl --header "Content-Type: application/json" --request POST --data '{"input": [0, 0, 0, 1, 125, 1]}' http://localhost:8008/predict```
