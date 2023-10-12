@@ -10,12 +10,15 @@ from sklearn.metrics import mean_absolute_error
 class Predictor:
     def __init__(self, model_name=None):  # todo: kwargs for model constructor
         if model_name is None:
-            model_name = "fpl_rfr_regressor"
+            self.model_name = "fpl_regressor"
+        else:
+            self.model_name = model_name
+
         self.regressor = RandomForestRegressor(
             n_estimators=100, verbose=0, criterion="squared_error"
         )
 
-        self.model_name = model_name
+        
         self.latest_GW: int  # todo: set from data preprocessing
         self.metadata: dict
 
