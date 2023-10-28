@@ -8,5 +8,4 @@ ipykernel
 fastapi
 uvicorn
 streamlit
-black
-isort
+wandb
