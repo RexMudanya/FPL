@@ -3,9 +3,6 @@ import json
 import requests
 import streamlit as st
 
-# todo: send input as api request
-# todo: button to send api request with input data
-# todo: retrieve and display response as prediction
 # todo: modular structure
 
 
