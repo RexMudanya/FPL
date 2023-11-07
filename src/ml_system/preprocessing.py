@@ -6,7 +6,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 
 class Preprocess:
-    def __init__(self, data, x_cols: list, y_cols: list) -> None:
+    def __init__(self, data, x_cols: list = None, y_cols: list = None) -> None:
         if x_cols is None:
             x_cols = ["position", "value", "was_home"]
         if y_cols is None:
@@ -27,6 +27,7 @@ class Preprocess:
         self.transformer = make_column_transformer(
             (OneHotEncoder(), ["position"]), remainder="passthrough"
         )
+        self.encode_categoricals()
 
     def encode_categoricals(self):
         self.X = pd.DataFrame(
