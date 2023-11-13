@@ -17,6 +17,7 @@ class FPLData:
         self.data_dir = data_dir
 
         try:
+            logging.info(f"Cloning {self.git_repo} at {self.data_dir}")
             self.repo_path = os.path.split(self._clone_repo())[0]
         except Exception as e:
             logging.info(f"{e} \t repo at {self.data_dir}")
@@ -26,6 +27,6 @@ class FPLData:
     def _clone_repo(self):
         return Repo.clone_from(self.git_repo, self.data_dir).git_dir
 
-    def latest_fpl_data(self, game_week: int = None):
+    def latest_fpl_data(self, game_week=None):
         gw = "gw" + str(game_week) if game_week else "merged_gw"
-        return os.path.join(self.repo_path, f"{self.season}/gws/{gw}.csv")
+        return os.path.join(self.repo_path, f"data/{self.season}/gws/{gw}.csv")

@@ -1,18 +1,32 @@
 import datetime
+import logging
+import os.path
 from pathlib import Path
 
 import joblib
 from numpy import array, round
+
+from src.ml_system.trainer import Trainer
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 TODAY = datetime.date.today()
 
 
 def train():
-    # todo: download historical data
-    # todo: fit new model
-    # todo: serialize and save model
-    pass
+    os.makedirs(os.path.join(str(BASE_DIR), "temp"), exist_ok=True)
+    model_trainer = Trainer(
+        os.path.join(BASE_DIR, "temp"),  # todo: ref
+        "https://github.com/vaastav/Fantasy-Premier-League.git",  # todo: impl env file
+        "2023-24",  # todo: ref, impl
+        None,  # todo: ref
+        os.path.join(BASE_DIR, "models"),
+    )
+
+    metadata = model_trainer.metadata
+    model_files = model_trainer.save_location
+    logging.info(f"model metadata: {metadata}")
+    logging.info(f"model location: {model_files}")
+    return model_files
 
 
 def predict(input: list):

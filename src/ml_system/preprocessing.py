@@ -20,6 +20,10 @@ class Preprocess:
         self.X = self.data[x_cols]
         self.y = self.data[y_cols]
 
+        assert len(self.X) == len(
+            self.y
+        ), f"X len: {len(self.X)} not equal to y: {len(self.y)}"
+
         self.X.loc[self.X["was_home"] == True, "was_home"] = 1
         self.X.loc[self.X["was_home"] == False, "was_home"] = 0
         self.X.columns.astype(str)
