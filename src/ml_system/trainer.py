@@ -1,14 +1,17 @@
 # rfr baseline model trainer
 import json
 import os.path
+import sys
 from datetime import datetime
+
+sys.path.insert(0, "..")
 
 import joblib
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 
-from src.ml_system.data_download import FPLData
-from src.ml_system.preprocessing import Preprocess, split_data
+from ml_system.data_download import FPLData
+from ml_system.preprocessing import Preprocess, split_data
 
 
 class Predictor:
