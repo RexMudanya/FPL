@@ -1,5 +1,5 @@
 from model import predict, train
-from pydantic import BaseModel
+from pydantic import BaseModel, PydanticUserError
 
 from fastapi import FastAPI, HTTPException
 
@@ -14,8 +14,11 @@ class PointsPrediction(PlayerDataIn):
     forecast: int
 
 
-class FPLModel(BaseModel):
-    trainedModel: tuple[str, dict]
+try:
+    class FPLModel(BaseModel):
+        trainedModel: any
+except PydanticUserError as exc:
+    assert exc.code == 'schema-for-unknown-type'
 
 
 app = FastAPI()
@@ -39,7 +42,7 @@ def get_prediction(payload: PlayerDataIn):
     return response_object
 
 
-@app.post("/train", response_model=FPLModel, status_code=200)
+@app.post("/train", status_code=200)
 def train_model():
     model_file, metrics = train()
 
