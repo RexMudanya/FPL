@@ -1,4 +1,7 @@
 *.csv
 *.json
+*.joblib
+*.zip
+temp/
 data/
 api/try.py

@@ -14,12 +14,8 @@ class PointsPrediction(PlayerDataIn):
     forecast: int
 
 
-class FPLModelIn(BaseModel):
-    pass
-
-
-class TrainedModel(FPLModelIn):
-    model: any
+class FPLModel(BaseModel):
+    trainedModel: tuple[str, dict]
 
 
 app = FastAPI()
@@ -31,7 +27,7 @@ def pong():
 
 
 @app.post("/predict", response_model=PointsPrediction, status_code=200)
-async def get_prediction(payload: PlayerDataIn):
+def get_prediction(payload: PlayerDataIn):
     input = payload.input
 
     prediction = predict(input)
@@ -40,14 +36,16 @@ async def get_prediction(payload: PlayerDataIn):
         raise HTTPException(status_code=400, detail="Model not found")
 
     response_object: dict = {"input": input, "forecast": prediction}
-    return await response_object
+    return response_object
 
 
-@app.post("/train", response_model=TrainedModel, status_code=200)
-async def train_model():
+@app.post("/train", response_model=FPLModel, status_code=200)
+def train_model():
     model_file, metrics = train()
 
-    if not model_file and not metrics:
+    if not model_file and metrics:
         raise HTTPException(status_code=400, detail="Training failed, check logs")
 
-    return await {"model_location": model_file, "metrics": metrics}
+    response_object = {"model_location": model_file, "metrics": metrics}
+
+    return response_object
