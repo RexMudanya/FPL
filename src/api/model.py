@@ -26,7 +26,7 @@ def train():
     )
 
     metadata = model_trainer.metadata
-    model_files = model_trainer.save_location
+    model_files = os.path.join(model_trainer.save_location, f"{model_trainer.model_name}_{model_trainer.date}.joblib")
     logging.info(f"model metadata: {metadata}")
     logging.info(f"model location: {model_files}")
     return model_files, metadata
