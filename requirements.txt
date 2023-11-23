@@ -9,3 +9,5 @@ fastapi
 uvicorn
 streamlit
 wandb
+boto3
+pre-commit
