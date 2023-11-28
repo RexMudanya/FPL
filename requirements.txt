@@ -8,6 +8,6 @@ ipykernel
 fastapi
 uvicorn
 streamlit
-wandb
+mlflow
 boto3
 pre-commit
