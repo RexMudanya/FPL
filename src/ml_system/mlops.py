@@ -38,7 +38,7 @@ class MlflowOps:
             mlflow.log_param("train-data", data[0])
             mlflow.log_param("validation-data", data[1])
 
-            [mlflow.log_param(k, v) for k, v in params.items() if params]
+            mlflow.log_params(params)
 
             mlflow.log_metrics(metrics)
 
