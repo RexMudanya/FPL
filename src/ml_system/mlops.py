@@ -23,12 +23,17 @@ class MlflowOps:
         mlflow.set_tag(config["entity"], config["name"])
 
         self.RUN_INFO = None
+        self.registered_model_name = None
 
     def log_training(
         self, data: tuple[str, str], params: dict, metrics: dict, model: tuple[str, any]
     ):
         with mlflow.start_run(nested=True) as run:
             self.RUN_INFO = dict(run.info)
+
+            self.registered_model_name = (
+                f'{self.experiment_name}_{self.RUN_INFO["run_id"]}_{model[0]}'
+            )
 
             mlflow.log_param("train-data", data[0])
             mlflow.log_param("validation-data", data[1])
@@ -41,13 +46,48 @@ class MlflowOps:
                 model[1],
                 model[0],
                 artifact_path=self.config["ARTIFACT_PATH"],
-                registered_model_name=f'{self.experiment_name}_{self.RUN_INFO["run_id"]}_{model[0]}',
+                registered_model_name=self.registered_model_name,
+            )
+
+            self._change_model_stage(
+                self.registered_model_name,
+                mlflow.MlflowClient()
+                .get_latest_versions(self.registered_model_name, stages=["None"])[0]
+                .version,
+                "Staging",
             )
 
             if self._check_best_run() == self.RUN_INFO["run_id"]:
-                pass
-                # TODO: check if model is in prod, use model in prod
-                # TODO: move current production model to archived
+                for models in mlflow.search_model_versions():
+                    if models.current_stage == "Production":
+                        self._change_model_stage(
+                            models.name, models.version, "Archived"
+                        )
+
+                self._change_model_stage(
+                    self.registered_model_name,
+                    mlflow.MlflowClient()
+                    .get_latest_versions(
+                        self.registered_model_name, stages=["Staging"]
+                    )[0]
+                    .version,
+                    "Production",
+                )
+                # TODO: upload to cloud
+            else:
+                self._change_model_stage(
+                    self.registered_model_name,
+                    mlflow.MlflowClient()
+                    .get_latest_versions(
+                        self.registered_model_name, stages=["Staging"]
+                    )[0]
+                    .version,
+                    "Archived",
+                )
+
+                mlflow.MlflowClient().delete_registered_model(
+                    name=self.registered_model_name
+                )
 
         mlflow.end_run()
 
@@ -59,5 +99,5 @@ class MlflowOps:
 
         return run_data.loc[0, "run_id"]
 
-    def _change_model_status(self, model_name: str, version: int, stage: str):
+    def _change_model_stage(self, model_name: str, version: int, stage: str):
         mlflow.MlflowClient().transition_model_version_stage(model_name, version, stage)
