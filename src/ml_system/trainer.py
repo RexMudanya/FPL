@@ -11,9 +11,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 
 from ml_system.data_download import FPLData
-from ml_system.preprocessing import Preprocess, split_data
 from ml_system.mlops import MlflowOps
-
+from ml_system.preprocessing import Preprocess, split_data
 
 config = {
     "MLFLOW_TRACKING_URI": "sqlite:///mlflow.db",
@@ -53,6 +52,7 @@ class Predictor:
         self.date = str(datetime.now()).replace(":", ".")
 
         self.train()
+        self.prediction = self.regressor.predict(self.X_test)
 
         try:
             self.mlops.log_training(
@@ -72,10 +72,10 @@ class Predictor:
         self.regressor.fit(self.X_train, self.y_train)
 
     def score(self):
-        return self.regressor.score(self.regressor.predict(self.X_test), self.y_test)
+        return self.regressor.score(self.X_test, self.y_test)
 
     def mae(self):
-        return mean_absolute_error(self.regressor.predict(self.X_test), self.y_test)
+        return mean_absolute_error(self.y_test, self.prediction)
 
     def save_model(self):
         joblib.dump(

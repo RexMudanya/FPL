@@ -11,7 +11,7 @@ class MlflowOps:
 
         mlflow.set_tracking_uri(self.config["MLFLOW_TRACKING_URI"])
         mlflow.set_experiment(self.experiment_name)
-        mlflow.set_tag(config["entity"], config["name"])
+        mlflow.set_tag(config["ENTITY"], config["NAME"])
 
         self.RUN_INFO = None
         self.registered_model_name = None
