@@ -1,17 +1,8 @@
 import mlflow
 
-config = {
-    "MLFLOW_TRACKING_URI": "sqlite:///mlflow.db",
-    "ENTITY": "",
-    "NAME": "",
-    "ARTIFACT_PATH": "",
-}  # todo: setup in env
-
 
 class MlflowOps:
-    def __int__(
-        self, experiment: str, config: dict = config
-    ):  # todo: setup config dict
+    def __init__(self, experiment: str, config: dict):  # todo: setup config dict
         assert config is not None, "provide config"
         assert experiment is not None, "provide experiment name"
 
@@ -94,8 +85,8 @@ class MlflowOps:
     def _check_best_run(self):
         current_experiment = dict(mlflow.get_experiment_by_name(self.experiment_name))
         run_data = mlflow.search_runs(
-            [current_experiment["experiment_id"]], order_by=["metrics.mse DESC"]
-        )  # TODO: ref metric to use
+            [current_experiment["experiment_id"]], order_by=["metrics.mae DESC"]
+        )
 
         return run_data.loc[0, "run_id"]
 

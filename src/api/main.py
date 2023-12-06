@@ -42,7 +42,7 @@ def get_prediction(payload: PlayerDataIn):
     return response_object
 
 
-@app.post("/train", status_code=200)
+@app.get("/train", status_code=200)
 def train_model():
     model_file, metrics = train()
 

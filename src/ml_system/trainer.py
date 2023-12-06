@@ -12,6 +12,15 @@ from sklearn.metrics import mean_absolute_error
 
 from ml_system.data_download import FPLData
 from ml_system.preprocessing import Preprocess, split_data
+from ml_system.mlops import MlflowOps
+
+
+config = {
+    "MLFLOW_TRACKING_URI": "sqlite:///mlflow.db",
+    "ENTITY": "dev",
+    "NAME": "test",
+    "ARTIFACT_PATH": "",
+}  # todo: setup in env
 
 
 class Predictor:
@@ -30,9 +39,13 @@ class Predictor:
         else:
             self.model_name = model_name
 
+        self.mlops = MlflowOps(
+            self.model_name + "_experiment", config  # TODO: read from toml/ env
+        )
+
         self.regressor = RandomForestRegressor(
             n_estimators=100, verbose=0, criterion="squared_error"
-        )
+        )  # TODO: add input as params
 
         self.latest_GW = None  # todo: set from data preprocessing
         self.metadata: dict
@@ -40,6 +53,17 @@ class Predictor:
         self.date = str(datetime.now()).replace(":", ".")
 
         self.train()
+
+        try:
+            self.mlops.log_training(
+                ((self.X_train, self.y_train), (self.X_test, self.y_test)),
+                None,  # TODO: feed model_params
+                {"rscore": round(self.score(), 4), "mae": round(self.mae(), 4)},
+                (self.model_name, self.regressor),
+            )
+        except Exception as e:
+            print(e)
+
         if save_location:
             self.save_model()
         self.save_metadata()
@@ -48,11 +72,10 @@ class Predictor:
         self.regressor.fit(self.X_train, self.y_train)
 
     def score(self):
-        return self.regressor.score(self.X_test, self.y_test)
+        return self.regressor.score(self.regressor.predict(self.X_test), self.y_test)
 
     def mae(self):
-        prediction = self.regressor.predict(self.X_test)
-        return mean_absolute_error(self.y_test, prediction)
+        return mean_absolute_error(self.regressor.predict(self.X_test), self.y_test)
 
     def save_model(self):
         joblib.dump(
@@ -67,12 +90,12 @@ class Predictor:
             "rscore": round(self.score(), 4),
             "mae": round(self.mae(), 4),
             "date": self.date,
-        }  # todo: ref with wandb
+        }
 
         if self.save_location:
             with open(
                 f"{self.save_location}/{self.model_name}_{self.date}.json", "w"
-            ) as f:  # todo: ref with wandb
+            ) as f:
                 json.dump(self.metadata, f)
 
 
