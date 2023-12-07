@@ -3,8 +3,11 @@ import json
 import requests
 import streamlit as st
 
+from utils.config import get_config
+
 # todo: modular structure
 
+CONFIG = get_config()
 
 player_positions = {
     "GKP": [0, 0, 1, 0],
@@ -18,7 +21,7 @@ match = {"home": 1, "away": 0}
 
 def send_request(input: list):  # todo: impl send request
     return requests.post(
-        url="http://localhost:8008/predict",  # todo: ref to use env variables
+        url=CONFIG["api"]["endpoint_url"],
         data=json.dumps({"input": input}),
     )
 

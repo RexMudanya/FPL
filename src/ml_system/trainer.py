@@ -13,13 +13,9 @@ from sklearn.metrics import mean_absolute_error
 from ml_system.data_download import FPLData
 from ml_system.mlops import MlflowOps
 from ml_system.preprocessing import Preprocess, split_data
+from utils.config import get_config
 
-config = {
-    "MLFLOW_TRACKING_URI": "sqlite:///mlflow.db",
-    "ENTITY": "dev",
-    "NAME": "test",
-    "ARTIFACT_PATH": "",
-}  # todo: setup in env
+CONFIG = get_config()
 
 
 class Predictor:
@@ -39,7 +35,8 @@ class Predictor:
             self.model_name = model_name
 
         self.mlops = MlflowOps(
-            self.model_name + "_experiment", config  # TODO: read from toml/ env
+            self.model_name + "_experiment",
+            CONFIG["mlops"],
         )
 
         self.regressor = RandomForestRegressor(
