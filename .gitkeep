@@ -5,3 +5,6 @@
 temp/
 data/
 api/try.py
+mlflow.db
+mlruns
+config.toml
