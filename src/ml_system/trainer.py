@@ -4,9 +4,8 @@ import os.path
 import sys
 from datetime import datetime
 
-sys.path.insert(0, "..")
-
 import joblib
+from loguru import logger
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 
@@ -14,6 +13,8 @@ from ml_system.data_download import FPLData
 from ml_system.mlops import MlflowOps
 from ml_system.preprocessing import Preprocess, split_data
 from utils.config import get_config
+
+sys.path.insert(0, "..")
 
 CONFIG = get_config()
 
@@ -25,6 +26,8 @@ class Predictor:
         assert len(X_train) == len(
             y_train
         ), f"X: {len(X_train)} not equal to y: {len(y_train)}"
+        logger.info("Training process started")
+
         self.X_train, self.y_train = X_train, y_train
         self.X_test, self.y_test = X_test, y_test
         self.save_location = save_location
@@ -54,12 +57,15 @@ class Predictor:
         try:
             self.mlops.log_training(
                 ((self.X_train, self.y_train), (self.X_test, self.y_test)),
-                None,  # TODO: feed model_params
+                {
+                    "n_estimators": 100,
+                    "criterion": "squared_error",
+                },  # TODO: feed model_params
                 {"rscore": round(self.score(), 4), "mae": round(self.mae(), 4)},
                 (self.model_name, self.regressor),
             )
         except Exception as e:
-            print(e)
+            logger.exception(f"{e}: experiment logging ignored")
 
         if save_location:
             self.save_model()
@@ -79,6 +85,7 @@ class Predictor:
             self.regressor,
             os.path.join(self.save_location, f"{self.model_name}_{self.date}.joblib"),
         )
+        logger.success(f"Model {self.model_name} saved at: {self.save_location}")
 
     def save_metadata(self):
         self.metadata = {
@@ -88,12 +95,14 @@ class Predictor:
             "mae": round(self.mae(), 4),
             "date": self.date,
         }
+        logger.info(f"Model metadata: {self.metadata}")
 
         if self.save_location:
             with open(
                 f"{self.save_location}/{self.model_name}_{self.date}.json", "w"
             ) as f:
                 json.dump(self.metadata, f)
+            logger.success(f"{self.model_name} metadata saved at: {self.save_location}")
 
 
 class Trainer(FPLData, Preprocess, Predictor):

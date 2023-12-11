@@ -11,3 +11,4 @@ streamlit
 mlflow
 boto3
 pre-commit
+loguru

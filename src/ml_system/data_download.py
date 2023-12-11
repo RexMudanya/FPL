@@ -1,7 +1,7 @@
-import logging
 import os
 
 from git import Repo
+from loguru import logger
 
 
 class FPLData:
@@ -17,10 +17,10 @@ class FPLData:
         self.data_dir = data_dir
 
         try:
-            logging.info(f"Cloning {self.git_repo} at {self.data_dir}")
+            logger.info(f"Cloning {self.git_repo} at {self.data_dir}")
             self.repo_path = os.path.split(self._clone_repo())[0]
         except Exception as e:
-            logging.info(f"{e} \t repo at {self.data_dir}")
+            logger.warning(f"{e} \t repo at {self.data_dir}")
             self.repo_path = self.data_dir
             Repo(self.repo_path).remotes.origin.pull()
 

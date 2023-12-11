@@ -1,4 +1,5 @@
 import mlflow
+from loguru import logger
 
 
 class MlflowOps:
@@ -8,6 +9,7 @@ class MlflowOps:
 
         self.config = config
         self.experiment_name = experiment
+        logger.info(f"Experiment config: {self.config}")
 
         mlflow.set_tracking_uri(self.config["MLFLOW_TRACKING_URI"])
         mlflow.set_experiment(self.experiment_name)
@@ -21,6 +23,7 @@ class MlflowOps:
     ):
         with mlflow.start_run(nested=True) as run:
             self.RUN_INFO = dict(run.info)
+            logger.info(f"Training logger started for run {self.RUN_INFO}")
 
             self.registered_model_name = (
                 f'{self.experiment_name}_{self.RUN_INFO["run_id"]}_{model[0]}'
@@ -35,7 +38,6 @@ class MlflowOps:
 
             mlflow.sklearn.log_model(
                 model[1],
-                model[0],
                 artifact_path=self.config["ARTIFACT_PATH"],
                 registered_model_name=self.registered_model_name,
             )
@@ -81,6 +83,7 @@ class MlflowOps:
                 )
 
         mlflow.end_run()
+        logger.success("Experiment Logging complete")
 
     def _check_best_run(self):
         current_experiment = dict(mlflow.get_experiment_by_name(self.experiment_name))
@@ -92,3 +95,4 @@ class MlflowOps:
 
     def _change_model_stage(self, model_name: str, version: int, stage: str):
         mlflow.MlflowClient().transition_model_version_stage(model_name, version, stage)
+        logger.success(f"changed {model_name}:{version} stage to: {stage}")
