@@ -12,7 +12,7 @@ class Preprocess:
         if y_cols is None:
             y_cols = ["total_points"]
 
-        self.data = pd.read_csv(data) if type(data) == str else data
+        self.data = pd.read_csv(data) if isinstance(data, str) else data
         self.latest_GW = list(self.data["GW"].unique())[
             -1
         ]  # todo: ref add year/season info
@@ -24,8 +24,8 @@ class Preprocess:
             self.y
         ), f"X len: {len(self.X)} not equal to y: {len(self.y)}"
 
-        self.X.loc[self.X["was_home"] == True, "was_home"] = 1
-        self.X.loc[self.X["was_home"] == False, "was_home"] = 0
+        self.X.loc[self.X["was_home"] == True, "was_home"] = 1  # noqa: E712
+        self.X.loc[self.X["was_home"] == False, "was_home"] = 0  # noqa: E712
         self.X.columns.astype(str)
 
         self.transformer = make_column_transformer(
