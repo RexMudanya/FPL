@@ -1,7 +1,7 @@
-import logging
 from os import path
 
 import toml
+from loguru import logger
 
 
 def get_config(config_path=None):
@@ -10,12 +10,12 @@ def get_config(config_path=None):
     )
 
     if not path.exists(config_path):
-        logging.error(f"{config_path} not found, create file from config_example.toml")
+        logger.error(f"{config_path} not found, create file from config_example.toml")
         raise FileNotFoundError()
 
     config = toml.load(config_path)
     if config.keys() != {"aws", "training_data", "mlops", "env", "api"}:
-        logging.error(f"{config_path} missing keys, check config_example")
+        logger.error(f"{config_path} missing keys, check config_example")
         raise KeyError(f"{config_path} missing keys, check config_example")
 
     return config
