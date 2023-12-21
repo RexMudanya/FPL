@@ -1,7 +1,10 @@
 import json
+import sys
 
 import requests
 import streamlit as st
+
+sys.path.insert(0, "..")
 
 from utils.config import get_config
 
