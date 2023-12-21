@@ -1,13 +1,13 @@
 import datetime
-import logging
 import os.path
 import sys
 from pathlib import Path
 
-sys.path.insert(0, "..")
-
 import joblib
+from loguru import logger
 from numpy import array, round
+
+sys.path.insert(0, "..")
 
 from ml_system.trainer import Trainer
 from utils.config import get_config
@@ -32,8 +32,8 @@ def train():
         model_trainer.save_location,
         f"{model_trainer.model_name}_{model_trainer.date}.joblib",
     )
-    logging.info(f"model metadata: {metadata}")
-    logging.info(f"model location: {model_files}")
+    logger.info(f"model metadata: {metadata}")
+    logger.info(f"model location: {model_files}")
     return model_files, metadata
 
 
