@@ -15,6 +15,8 @@ class MlflowOps:
         mlflow.set_experiment(self.experiment_name)
         mlflow.set_tag(config["ENTITY"], config["NAME"])
 
+        self.FlowClient = mlflow.MlflowClient()
+
         self.RUN_INFO = None
         self.registered_model_name = None
 
@@ -44,9 +46,9 @@ class MlflowOps:
 
             self._change_model_stage(
                 self.registered_model_name,
-                mlflow.MlflowClient()
-                .get_latest_versions(self.registered_model_name, stages=["None"])[0]
-                .version,
+                self.FlowClient.get_latest_versions(
+                    self.registered_model_name, stages=["None"]
+                )[0].version,
                 "Staging",
             )
 
@@ -59,28 +61,22 @@ class MlflowOps:
 
                 self._change_model_stage(
                     self.registered_model_name,
-                    mlflow.MlflowClient()
-                    .get_latest_versions(
+                    self.FlowClient.get_latest_versions(
                         self.registered_model_name, stages=["Staging"]
-                    )[0]
-                    .version,
+                    )[0].version,
                     "Production",
                 )
                 # TODO: upload to cloud
             else:
                 self._change_model_stage(
                     self.registered_model_name,
-                    mlflow.MlflowClient()
-                    .get_latest_versions(
+                    self.FlowClient.get_latest_versions(
                         self.registered_model_name, stages=["Staging"]
-                    )[0]
-                    .version,
+                    )[0].version,
                     "Archived",
                 )
 
-                mlflow.MlflowClient().delete_registered_model(
-                    name=self.registered_model_name
-                )
+                self.FlowClient.delete_registered_model(name=self.registered_model_name)
 
         mlflow.end_run()
         logger.success("Experiment Logging complete")
@@ -93,6 +89,6 @@ class MlflowOps:
 
         return run_data.loc[0, "run_id"]
 
-    def _change_model_stage(self, model_name: str, version: int, stage: str):
-        mlflow.MlflowClient().transition_model_version_stage(model_name, version, stage)
+    def _change_model_stage(self, model_name: str, version: str, stage: str):
+        self.FlowClient.transition_model_version_stage(model_name, version, stage)
         logger.success(f"changed {model_name}:{version} stage to: {stage}")

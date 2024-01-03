@@ -9,8 +9,8 @@ from numpy import array, round
 
 sys.path.insert(0, "..")
 
-from ml_system.trainer import Trainer
-from utils.config import get_config
+from ml_system.trainer import Trainer  # noqa E402
+from utils.config import get_config  # noqa E402
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 TODAY = datetime.date.today()
@@ -37,9 +37,14 @@ def train():
     return model_files, metadata
 
 
-def predict(input: list):
+# TODO: download best model from S3 bucket
+
+
+def predict(input_data: list):
     # todo: check input type & shape matches model input
-    model_file = Path(BASE_DIR).joinpath(r"models/baseline.joblib")  # todo: ref
+    model_file = Path(BASE_DIR).joinpath(
+        r"models/baseline.joblib"
+    )  # todo: load downloaded model
 
     model = (
         joblib.load(model_file)
@@ -47,4 +52,4 @@ def predict(input: list):
         else FileNotFoundError(model_file)
     )
 
-    return round(model.predict(array(input).reshape(1, -1)))  # todo: ref
+    return round(model.predict(array(input_data).reshape(1, -1)))  # todo: ref

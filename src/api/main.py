@@ -1,7 +1,6 @@
+from fastapi import FastAPI, HTTPException
 from model import predict, train
 from pydantic import BaseModel, PydanticUserError
-
-from fastapi import FastAPI, HTTPException
 
 # pydantic models
 
@@ -15,10 +14,12 @@ class PointsPrediction(PlayerDataIn):
 
 
 try:
+
     class FPLModel(BaseModel):
         trainedModel: any
+
 except PydanticUserError as exc:
-    assert exc.code == 'schema-for-unknown-type'
+    assert exc.code == "schema-for-unknown-type"
 
 
 app = FastAPI()
@@ -31,14 +32,14 @@ def pong():
 
 @app.post("/predict", response_model=PointsPrediction, status_code=200)
 def get_prediction(payload: PlayerDataIn):
-    input = payload.input
+    data_input = payload.input
 
-    prediction = predict(input)
+    prediction = predict(data_input)
 
     if not prediction:
         raise HTTPException(status_code=400, detail="Model not found")
 
-    response_object: dict = {"input": input, "forecast": prediction}
+    response_object: dict = {"input": data_input, "forecast": prediction}
     return response_object
 
 

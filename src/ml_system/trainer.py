@@ -21,7 +21,14 @@ CONFIG = get_config()
 
 class Predictor:
     def __init__(
-        self, X_train, y_train, X_test, y_test, save_location=None, model_name=None
+        self,
+        X_train,
+        y_train,
+        X_test,
+        y_test,
+        latest_gw,
+        save_location=None,
+        model_name=None,
     ):  # todo: kwargs for model constructor
         assert len(X_train) == len(
             y_train
@@ -46,8 +53,8 @@ class Predictor:
             n_estimators=100, verbose=0, criterion="squared_error"
         )  # TODO: add input as params
 
-        self.latest_GW = None  # todo: set from data preprocessing
-        self.metadata: dict
+        self.latest_GW = latest_gw  # todo: set from data preprocessing
+        self.metadata = None
 
         self.date = str(datetime.now()).replace(":", ".")
 
@@ -72,7 +79,7 @@ class Predictor:
         self.save_metadata()
 
     def train(self):
-        self.regressor.fit(self.X_train, self.y_train)
+        self.regressor.fit(self.X_train.values, self.y_train.values)
 
     def score(self):
         return self.regressor.score(self.X_test, self.y_test)
@@ -112,4 +119,6 @@ class Trainer(FPLData, Preprocess, Predictor):
 
         X_train, X_test, y_train, y_test = split_data(self.X, self.y)
         self.save_dir = save_dir
-        Predictor.__init__(self, X_train, y_train, X_test, y_test, self.save_dir)
+        Predictor.__init__(
+            self, X_train, y_train, X_test, y_test, game_week, self.save_dir
+        )
