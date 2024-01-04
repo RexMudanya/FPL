@@ -3,7 +3,7 @@ from loguru import logger
 
 
 class MlflowOps:
-    def __init__(self, experiment: str, config: dict):  # todo: setup config dict
+    def __init__(self, experiment: str, config: dict):
         assert config is not None, "provide config"
         assert experiment is not None, "provide experiment name"
 
@@ -13,12 +13,16 @@ class MlflowOps:
 
         mlflow.set_tracking_uri(self.config["MLFLOW_TRACKING_URI"])
         mlflow.set_experiment(self.experiment_name)
-        mlflow.set_tag(config["ENTITY"], config["NAME"])
+        mlflow.set_tag(self.config["ENTITY"], self.config["NAME"])
 
         self.FlowClient = mlflow.MlflowClient()
 
         self.RUN_INFO = None
-        self.registered_model_name = None
+        self.registered_model_name = (
+            self.config["ml_model_name"] if self.config["ml_model_name"] else None
+        )
+
+        self.best_model = False
 
     def log_training(
         self, data: tuple[str, str], params: dict, metrics: dict, model: tuple[str, any]
@@ -66,7 +70,7 @@ class MlflowOps:
                     )[0].version,
                     "Production",
                 )
-                # TODO: upload to cloud
+                self.best_model = True
             else:
                 self._change_model_stage(
                     self.registered_model_name,
@@ -78,8 +82,8 @@ class MlflowOps:
 
                 self.FlowClient.delete_registered_model(name=self.registered_model_name)
 
-        mlflow.end_run()
-        logger.success("Experiment Logging complete")
+            mlflow.end_run()
+            logger.success("Experiment Logging complete")
 
     def _check_best_run(self):
         current_experiment = dict(mlflow.get_experiment_by_name(self.experiment_name))

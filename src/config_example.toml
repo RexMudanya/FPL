@@ -14,6 +14,9 @@ ENTITY = "dev"
 NAME = "test"
 ARTIFACT_PATH = ""
 ml_model_name = ""
+upload_model_signature = ""
+upload_model_artifacts = ""
+download_model_artifacts = ""
 
 [env]
 ml_save_location = ""

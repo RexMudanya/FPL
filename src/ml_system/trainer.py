@@ -74,6 +74,8 @@ class Predictor:
         except Exception as e:
             logger.exception(f"{e}: experiment logging ignored")
 
+        self.upload = self.mlops.best_model
+
         if save_location:
             self.save_model()
         self.save_metadata()
