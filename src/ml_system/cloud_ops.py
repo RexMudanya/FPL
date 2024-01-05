@@ -13,11 +13,11 @@ class AwsOps:
         self.s3 = self.session.resource("s3")
         self.s3_client = boto3.client("s3")
 
-    def upload_s3(self, bucket: str, file, key=None):
+    def upload_s3(self, bucket: str, file, signature=None):
         assert exists(file), f"{file} not found"
-        logger.info(f"Uploading {file} to {bucket}; signature: {key}")
+        logger.info(f"Uploading {file} to {bucket}; signature: {signature}")
         self.s3.meta.client.upload_file(
-            Filename=file, Bucket=bucket, key=key if key else basename(file)
+            Filename=file, Bucket=bucket, Key=signature if signature else basename(file)
         )  # todo: check for success
         # TODO: ref to client
 

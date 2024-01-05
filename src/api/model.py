@@ -30,11 +30,15 @@ def train():
         join(BASE_DIR, "models"),
     )
 
-    metadata = model_trainer.metadata
+    metadata = join(
+        model_trainer.save_location,
+        f"{model_trainer.model_name}_{model_trainer.date}.json",
+    )
     model_files = join(
         model_trainer.save_location,
         f"{model_trainer.model_name}_{model_trainer.date}.joblib",
     )
+
     logger.info(f"model metadata: {metadata}")
     logger.info(f"model location: {model_files}")
 
@@ -64,6 +68,7 @@ def predict(input_data: list):
             CONFIG["mlops"]["upload_model_signature"] + ".joblib",
             CONFIG["env"]["ml_save_location"],
         )
+    # TODO: else read from localy trained model
 
     model_file = join(
         CONFIG["env"]["ml_save_location"],

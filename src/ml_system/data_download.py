@@ -22,7 +22,7 @@ class FPLData:
         except Exception as e:
             logger.warning(f"{e} \t repo at {self.data_dir}")
             self.repo_path = self.data_dir
-            Repo(self.repo_path).remotes.origin.pull()
+            Repo(self.repo_path, search_parent_directories=True).remotes.origin.pull()
 
     def _clone_repo(self):
         return Repo.clone_from(self.git_repo, self.data_dir).git_dir
