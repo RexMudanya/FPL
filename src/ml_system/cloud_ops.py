@@ -11,7 +11,9 @@ class AwsOps:
             aws_access_key_id=access_key, aws_secret_access_key=secret_key
         )
         self.s3 = self.session.resource("s3")
-        self.s3_client = boto3.client("s3")
+        self.s3_client = boto3.client(
+            "s3", aws_access_key_id=access_key, aws_secret_access_key=secret_key
+        )
 
     def upload_s3(self, bucket: str, file, signature=None):
         assert exists(file), f"{file} not found"

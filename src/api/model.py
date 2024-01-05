@@ -66,8 +66,20 @@ def predict(input_data: list):
         AWS_CLIENT.download_s3(
             CONFIG["aws"]["ml_models_bucket"],
             CONFIG["mlops"]["upload_model_signature"] + ".joblib",
-            CONFIG["env"]["ml_save_location"],
+            CONFIG["env"]["ml_save_location"]
+            + "/"
+            + CONFIG["mlops"]["upload_model_signature"]
+            + ".joblib",  # TODO: ref
         )
+        AWS_CLIENT.download_s3(
+            CONFIG["aws"]["ml_models_bucket"],
+            CONFIG["mlops"]["upload_model_signature"] + ".json",
+            CONFIG["env"]["ml_save_location"]
+            + "/"
+            + CONFIG["mlops"]["upload_model_signature"]
+            + ".json",  # TODO: ref
+        )
+
     # TODO: else read from localy trained model
 
     model_file = join(
