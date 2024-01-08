@@ -27,17 +27,11 @@ def train():
         CONFIG["training_data"]["git_repo_url"],
         CONFIG["training_data"]["training_season"],
         None,  # todo: ref
-        join(BASE_DIR, "models"),
+        CONFIG["env"]["ml_save_location"],
     )
 
-    metadata = join(
-        model_trainer.save_location,
-        f"{model_trainer.model_name}_{model_trainer.date}.json",
-    )
-    model_files = join(
-        model_trainer.save_location,
-        f"{model_trainer.model_name}_{model_trainer.date}.joblib",
-    )
+    metadata = model_trainer.metadata_location
+    model_files = model_trainer.model_location
 
     logger.info(f"model metadata: {metadata}")
     logger.info(f"model location: {model_files}")
@@ -79,8 +73,6 @@ def predict(input_data: list):
             + CONFIG["mlops"]["upload_model_signature"]
             + ".json",  # TODO: ref
         )
-
-    # TODO: else read from localy trained model
 
     model_file = join(
         CONFIG["env"]["ml_save_location"],

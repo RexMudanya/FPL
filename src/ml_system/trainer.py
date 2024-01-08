@@ -1,8 +1,8 @@
 # rfr baseline model trainer
 import json
-import os.path
 import sys
 from datetime import datetime
+from os.path import join
 
 import joblib
 from loguru import logger
@@ -76,9 +76,12 @@ class Predictor:
 
         self.upload = self.mlops.best_model
 
-        if save_location:
+        self.model_location = None
+        self.metadata_location = None
+
+        if save_location and self.upload:
             self.save_model()
-        self.save_metadata()
+            self.save_metadata()
 
     def train(self):
         self.regressor.fit(self.X_train.values, self.y_train.values)
@@ -90,9 +93,10 @@ class Predictor:
         return mean_absolute_error(self.y_test, self.prediction)
 
     def save_model(self):
+        self.model_location = join(self.save_location, f"{self.model_name}.joblib")
         joblib.dump(
             self.regressor,
-            os.path.join(self.save_location, f"{self.model_name}_{self.date}.joblib"),
+            self.model_location,
         )
         logger.success(f"Model {self.model_name} saved at: {self.save_location}")
 
@@ -106,10 +110,10 @@ class Predictor:
         }
         logger.info(f"Model metadata: {self.metadata}")
 
+        self.metadata_location = join(self.save_location, f"{self.model_name}.json")
+
         if self.save_location:
-            with open(
-                f"{self.save_location}/{self.model_name}_{self.date}.json", "w"
-            ) as f:
+            with open(self.metadata_location, "w") as f:
                 json.dump(self.metadata, f)
             logger.success(f"{self.model_name} metadata saved at: {self.save_location}")
 
