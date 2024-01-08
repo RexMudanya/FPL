@@ -51,32 +51,31 @@ def train():
     return model_files, metadata
 
 
-# TODO: download best model from S3 bucket
-
-
 def predict(input_data: list):
     # todo: check input type & shape matches model input
     if CONFIG["mlops"]["download_model_artifacts"]:
         AWS_CLIENT.download_s3(
             CONFIG["aws"]["ml_models_bucket"],
-            CONFIG["mlops"]["upload_model_signature"] + ".joblib",
-            CONFIG["env"]["ml_save_location"]
-            + "/"
-            + CONFIG["mlops"]["upload_model_signature"]
-            + ".joblib",  # TODO: ref
+            f'{CONFIG["mlops"]["upload_model_signature"]}.joblib',
+            join(
+                CONFIG["env"]["ml_save_location"],
+                f'{CONFIG["mlops"]["upload_model_signature"]}.joblib',
+            ),
         )
         AWS_CLIENT.download_s3(
             CONFIG["aws"]["ml_models_bucket"],
-            CONFIG["mlops"]["upload_model_signature"] + ".json",
-            CONFIG["env"]["ml_save_location"]
-            + "/"
-            + CONFIG["mlops"]["upload_model_signature"]
-            + ".json",  # TODO: ref
+            f'{CONFIG["mlops"]["upload_model_signature"]}.json',
+            join(
+                CONFIG["env"]["ml_save_location"],
+                f'{CONFIG["mlops"]["upload_model_signature"]}.json',
+            ),
         )
+
+    logger.info(CONFIG["mlops"]["download_model_artifacts"])
 
     model_file = join(
         CONFIG["env"]["ml_save_location"],
-        CONFIG["mlops"]["upload_model_signature"] + ".joblib",
+        f'{CONFIG["mlops"]["upload_model_signature"]}.joblib',
     )
 
     model = (

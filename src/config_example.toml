@@ -15,8 +15,8 @@ NAME = "test"
 ARTIFACT_PATH = ""
 ml_model_name = ""
 upload_model_signature = ""
-upload_model_artifacts = ""
-download_model_artifacts = ""
+upload_model_artifacts = false
+download_model_artifacts = false
 
 [env]
 ml_save_location = ""
