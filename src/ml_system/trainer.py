@@ -39,10 +39,7 @@ class Predictor:
         self.X_test, self.y_test = X_test, y_test
         self.save_location = save_location
 
-        if model_name is None:
-            self.model_name = "fpl_regressor"
-        else:
-            self.model_name = model_name
+        self.model_name = model_name if model_name else "fpl_regressor"
 
         self.mlops = MlflowOps(
             self.model_name + "_experiment",
