@@ -1,4 +1,5 @@
 import pandas as pd
+from loguru import logger
 
 from ml_system.data_download import FPLData
 
@@ -12,9 +13,10 @@ class FPLDataStats(FPLData):
     def _filter(self, column: str):
         filtered = {}
         for position in self.data["position"].unique():
-            filtered[position] = self.data.loc[self.data["position"] == position][
-                column
-            ].sum()
+            filtered[position] = (
+                self.data.loc[self.data["position"] == position][column].sum().item()
+            )
+        logger.info(filtered)
 
         return filtered
 

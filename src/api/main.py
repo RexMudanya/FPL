@@ -2,6 +2,9 @@ from fastapi import FastAPI, HTTPException
 from model import predict, train
 from pydantic import BaseModel, PydanticUserError
 
+from ml_system.data_viz import FPLDataStats
+from utils.config import get_config
+
 # pydantic models
 
 
@@ -21,6 +24,13 @@ try:
 except PydanticUserError as exc:
     assert exc.code == "schema-for-unknown-type"
 
+
+CONFIG = get_config()
+fpl_data_stats = FPLDataStats(
+    CONFIG["training_data"]["git_repo_url"],
+    CONFIG["training_data"]["training_season"],
+    CONFIG["training_data"]["data_location"],
+)
 
 app = FastAPI()
 
@@ -53,3 +63,18 @@ def train_model():
     response_object = {"model_location": model_file, "metrics": metrics}
 
     return response_object
+
+
+@app.get("/goals_scored", status_code=200)
+def goals_scored():
+    return {"goal_data": fpl_data_stats.goal_distribution()}
+
+
+@app.get("/assists", status_code=200)
+def assists():
+    return {"assist_data": fpl_data_stats.assist_distribution()}
+
+
+@app.get("/clean_sheets", status_code=200)
+def clean_sheets():
+    return {"clean_sheet_table": fpl_data_stats.clean_sheet_table()}
