@@ -6,6 +6,7 @@ ml_models_bucket = ""
 [training_data]
 git_repo_url = "https://github.com/vaastav/Fantasy-Premier-League.git"
 training_season = "2023-24"
+data_location = ""
 
 [mlops]
 EXPERIMENT_NAME = ""
