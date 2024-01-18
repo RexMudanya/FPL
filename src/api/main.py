@@ -32,7 +32,7 @@ fpl_data_stats = FPLDataStats(
     CONFIG["training_data"]["data_location"],
 )
 
-app = FastAPI()
+app = FastAPI(debug=True)  # TODO: ref
 
 
 @app.get("/ping")
