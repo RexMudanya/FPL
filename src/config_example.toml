@@ -1,0 +1,28 @@
+[aws]
+access_key = ""
+secret_key = ""
+ml_models_bucket = ""
+
+[training_data]
+git_repo_url = "https://github.com/vaastav/Fantasy-Premier-League.git"
+training_season = "2023-24"
+data_location = ""
+
+[mlops]
+EXPERIMENT_NAME = ""
+MLFLOW_TRACKING_URI = "sqlite:///mlflow.db"
+ENTITY = "dev"
+NAME = "test"
+ARTIFACT_PATH = ""
+ml_model_name = ""
+upload_model_signature = ""
+upload_model_artifacts = false
+download_model_artifacts = false
+
+[env]
+ml_save_location = ""
+
+[api]
+endpoint_url = ""
+host = ""
+port = ""

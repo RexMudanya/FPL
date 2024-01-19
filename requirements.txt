@@ -1,6 +1,14 @@
 numpy
 pandas
 requests
-sklearn
+scikit-learn
 matplotlib
 jupyter
+ipykernel
+fastapi
+uvicorn
+streamlit
+mlflow
+boto3
+pre-commit
+loguru

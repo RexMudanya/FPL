@@ -345,3 +345,12 @@ pip-selfcheck.json
 # End of https://www.toptal.com/developers/gitignore/api/python,virtualenv,jupyternotebooks,images,pycharm
 
 api/try.py
+Fantasy-Premier-League
+notebooks/models
+notebooks/wandb/
+*.joblib
+*.zip
+temp/
+mlflow.db
+mlruns
+config.toml
