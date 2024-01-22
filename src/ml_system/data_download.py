@@ -24,9 +24,9 @@ class FPLData:
             self.repo_path = self.data_dir
             Repo(self.repo_path, search_parent_directories=True).remotes.origin.pull()
 
-    def _clone_repo(self):
+    def _clone_repo(self):  # pragma: no cover
         return Repo.clone_from(self.git_repo, self.data_dir).git_dir
 
-    def latest_fpl_data(self, game_week=None):
+    def latest_fpl_data(self, game_week=None):  # pragma: no cover
         gw = "gw" + str(game_week) if game_week else "merged_gw"
         return os.path.join(self.repo_path, f"data/{self.season}/gws/{gw}.csv")

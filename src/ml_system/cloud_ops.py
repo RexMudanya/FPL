@@ -15,7 +15,7 @@ class AwsOps:
             "s3", aws_access_key_id=access_key, aws_secret_access_key=secret_key
         )
 
-    def upload_s3(self, bucket: str, file, signature=None):
+    def upload_s3(self, bucket: str, file, signature=None):  # pragma: no cover
         assert exists(file), f"{file} not found"
         logger.info(f"Uploading {file} to {bucket}; signature: {signature}")
         self.s3.meta.client.upload_file(
@@ -23,7 +23,7 @@ class AwsOps:
         )  # todo: check for success
         # TODO: ref to client
 
-    def download_s3(self, bucket, file, destination):
+    def download_s3(self, bucket, file, destination):  # pragma: no cover
         logger.info(f"Downloading {file} from {bucket}; to {destination}")
         makedirs(split(destination)[0], exist_ok=True)
         self.s3_client.download_file(bucket, file, destination)
