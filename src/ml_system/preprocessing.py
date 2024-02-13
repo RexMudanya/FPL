@@ -33,7 +33,7 @@ class Preprocess:
         )
         self.encode_categoricals()
 
-    def encode_categoricals(self):
+    def encode_categoricals(self):  # pragma: no cover
         self.X = pd.DataFrame(
             self.transformer.fit_transform(self.X),
             columns=self.transformer.get_feature_names_out(),

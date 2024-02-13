@@ -8,7 +8,7 @@ def get_config(config_path=None):
     config_path = (
         path.dirname(__file__) + "/../config.toml" if not config_path else config_path
     )
-
+    logger.info(f"loading config at {config_path}")
     if not path.exists(config_path):
         logger.error(f"{config_path} not found, create file from config_example.toml")
         raise FileNotFoundError()
