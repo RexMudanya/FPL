@@ -14,7 +14,9 @@ from utils.config import get_config  # noqa E402
 
 TODAY = datetime.date.today()
 CONFIG = get_config()
-AWS_CLIENT = AwsOps(CONFIG["aws"]["access_key"], CONFIG["aws"]["secret_key"])
+AWS_CLIENT = AwsOps(
+    CONFIG["aws"]["access_key"], CONFIG["aws"]["secret_key"], CONFIG["aws"]["region"]
+)
 
 
 def train():

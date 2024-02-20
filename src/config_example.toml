@@ -2,6 +2,7 @@
 access_key = ""
 secret_key = ""
 ml_models_bucket = ""
+region = ""
 
 [training_data]
 git_repo_url = "https://github.com/vaastav/Fantasy-Premier-League.git"
