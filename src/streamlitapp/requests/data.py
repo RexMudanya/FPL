@@ -25,7 +25,7 @@ class Data:
             logger.error(exc)
             return exc
 
-    def get_game_week_points(self, game_week):
+    def get_game_week_points(self, game_week: int):
         try:
             response = requests.post(
                 self.api_url + "game_week_points",
@@ -51,7 +51,7 @@ class Data:
             logger.error(exc)
             return exc
 
-    def get_game_week_points_ownership(self, game_week):
+    def get_game_week_points_ownership(self, game_week: int):
         try:
             response = requests.post(
                 self.api_url + "point_ownership",
