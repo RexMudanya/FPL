@@ -73,9 +73,7 @@ def predict(input_data: list):
         CONFIG["env"]["ml_save_location"],
         f'{CONFIG["mlops"]["upload_model_signature"]}.joblib',
     )
-
-    model = (
-        joblib.load(model_file) if exists(model_file) else FileNotFoundError(model_file)
-    )
+    assert exists(model_file), f"file not found {model_file}"
+    model = joblib.load(model_file)
 
     return round(model.predict(array(input_data).reshape(1, -1)))  # todo: ref
