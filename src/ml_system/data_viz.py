@@ -69,7 +69,7 @@ class FPLDataStats(FPLData):
                     "selected",
                     "minutes",
                     "GW",
-                    "total_points",
+                    "points_per_90",
                 ]
             ]
             .to_dict(orient="records")
