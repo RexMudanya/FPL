@@ -68,6 +68,11 @@ def train_model():
     return response_object
 
 
+@app.get("/players", status_code=200)
+def players():
+    return {"players": fpl_data_stats.player_list}
+
+
 @app.get("/goals_scored", status_code=200)
 def goals_scored():
     return {"goal_data": fpl_data_stats.goal_distribution()}

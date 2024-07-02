@@ -8,6 +8,15 @@ class Data:
     def __init__(self, api_url):
         self.api_url = api_url
 
+    def get_players(self):
+        try:
+            response = requests.get(self.api_url + "players", timeout=5)
+            response.raise_for_status()
+            return json.loads(response.content.decode("utf-8"))
+        except Exception as exc:
+            logger.error(exc)
+            return exc
+
     def get_points_prediction(self, predictors: list):
         try:
             response = requests.post(

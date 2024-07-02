@@ -1,4 +1,5 @@
 import sys
+from random import sample
 
 import plotly.graph_objects as go
 import streamlit as st
@@ -18,6 +19,9 @@ gw_points_ownership = data.get_game_week_points_ownership(gw)[
 ][:5]
 gw_xg_xa = data.get_game_week_xg_xa(gw)["gw_xg_xa"][:5]
 
+player_list = data.get_players()
+random_players = sample(player_list["players"], 2)
+
 # Streamlit App
 st.title("Fantasy Premier League Dashboard")
 
@@ -34,7 +38,7 @@ if choice == "General Overview":
                     values=list(game_week_points[0].keys()),
                     # fill_color='paleturquoise',
                     align="left",
-                    line_color="white"
+                    line_color="white",
                 ),
                 cells=dict(
                     values=[
@@ -45,11 +49,11 @@ if choice == "General Overview":
                     ],
                     # fill_color='lavender',
                     align="left",
-                    line_color="white"
+                    line_color="white",
                 ),
             )
         ]
-    )
+    )  # TODO: styling updates
     gw_points_table.update_layout(title="Game week points")
     st.plotly_chart(gw_points_table)
 
@@ -60,7 +64,7 @@ if choice == "General Overview":
                     values=list(gw_points_ownership[0].keys()),
                     # fill_color='paleturquoise',
                     align="left",
-                    line_color="white"
+                    line_color="white",
                 ),
                 cells=dict(
                     values=[
@@ -71,7 +75,7 @@ if choice == "General Overview":
                     ],
                     # fill_color='lavender',
                     align="left",
-                    line_color="white"
+                    line_color="white",
                 ),
             )
         ]
@@ -86,7 +90,7 @@ if choice == "General Overview":
                     values=list(gw_xg_xa[0].keys()),
                     # fill_color='paleturquoise',
                     align="left",
-                    line_color="white"
+                    line_color="white",
                 ),
                 cells=dict(
                     values=[
@@ -95,10 +99,22 @@ if choice == "General Overview":
                     ],
                     # fill_color='lavender',
                     align="left",
-                    line_color="white"
+                    line_color="white",
                 ),
             )
         ]
     )
     gw_xg_xa_table.update_layout(title="Game week expected points and assists")
     st.plotly_chart(gw_xg_xa_table)
+
+elif choice == "Player Comparison":
+    st.subheader("Player Comparison")
+
+    players_selected = st.multiselect(
+        "Select Players to Compare", player_list["players"], default=random_players
+    )  # TODO: ref for static random
+
+    if players_selected:
+        pass  # TODO: get data for selected players
+    else:
+        st.warning("Please select at least one player to compare")

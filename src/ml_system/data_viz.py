@@ -13,6 +13,8 @@ class FPLDataStats(FPLData):
         self.data["points_per_90"] = self.data["total_points"] / self.data["minutes"]
         self.data["points_per_90"] = self.data["points_per_90"].fillna(0)
 
+        self.player_list = list(self.data["name"].unique())
+
     def _filter(self, column: str):
         filtered = {}
         for position in self.data["position"].unique():
