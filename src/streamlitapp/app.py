@@ -34,6 +34,7 @@ if choice == "General Overview":
                     values=list(game_week_points[0].keys()),
                     # fill_color='paleturquoise',
                     align="left",
+                    line_color="white"
                 ),
                 cells=dict(
                     values=[
@@ -44,6 +45,7 @@ if choice == "General Overview":
                     ],
                     # fill_color='lavender',
                     align="left",
+                    line_color="white"
                 ),
             )
         ]
@@ -58,6 +60,7 @@ if choice == "General Overview":
                     values=list(gw_points_ownership[0].keys()),
                     # fill_color='paleturquoise',
                     align="left",
+                    line_color="white"
                 ),
                 cells=dict(
                     values=[
@@ -68,6 +71,7 @@ if choice == "General Overview":
                     ],
                     # fill_color='lavender',
                     align="left",
+                    line_color="white"
                 ),
             )
         ]
@@ -82,6 +86,7 @@ if choice == "General Overview":
                     values=list(gw_xg_xa[0].keys()),
                     # fill_color='paleturquoise',
                     align="left",
+                    line_color="white"
                 ),
                 cells=dict(
                     values=[
@@ -90,6 +95,7 @@ if choice == "General Overview":
                     ],
                     # fill_color='lavender',
                     align="left",
+                    line_color="white"
                 ),
             )
         ]
