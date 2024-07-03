@@ -4,6 +4,7 @@ from random import sample
 import plotly.graph_objects as go
 import streamlit as st
 from data.data import Data
+from plotly.subplots import make_subplots
 
 sys.path.insert(0, "..")
 from utils.config import get_config
@@ -112,9 +113,20 @@ elif choice == "Player Comparison":
 
     players_selected = st.multiselect(
         "Select Players to Compare", player_list["players"], default=random_players
-    )  # TODO: ref for static random
+    )
 
     if players_selected:
-        pass  # TODO: get data for selected players
+        stats = {name: {} for name in players_selected}
+        for player in players_selected:
+            stats[player]["points"] = data.get_player_points_per_game_week(player)[
+                "points_per_gw"
+            ]
+            stats[player]["points_ownership"] = data.get_player_90_points_ownership(
+                player
+            )["points_ownership"]
+            stats[player]["player_xg_xa"] = data.get_player_xq_xa(player)[
+                "player_xg_xa"
+            ]
+        # TODO: plot comparison graphs
     else:
         st.warning("Please select at least one player to compare")
