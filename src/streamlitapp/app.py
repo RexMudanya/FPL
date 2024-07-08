@@ -23,6 +23,15 @@ gw_xg_xa = data.get_game_week_xg_xa(gw)["gw_xg_xa"][:5]
 player_list = data.get_players()
 random_players = ["Eberechi Eze", "Cole Palmer"]  # TODO: ref with top 2 players
 
+player_positions = {
+    "GKP": [0, 0, 1, 0],
+    "DEF": [1, 0, 0, 0],
+    "MID": [0, 0, 0, 1],
+    "FWD": [0, 1, 0, 0],
+}  # todo: ref, impl dict vectorizer
+
+match = {"home": 1, "away": 0}
+
 # Streamlit App
 st.title("Fantasy Premier League Dashboard")
 
@@ -219,3 +228,28 @@ elif choice == "Player Comparison":
         st.plotly_chart(expected_assists_comparison)
     else:
         st.warning("Please select at least one player to compare")
+
+elif choice == "Points Prediction":  # TODO: fix reload bug
+    st.subheader(choice)
+
+    player_position_selector = st.selectbox(
+        "FPL Player Position", tuple(player_positions.keys())
+    )
+    player_position = player_positions[player_position_selector]
+
+    player_value_input = st.number_input("FPL Player value")  # TODO: set min, max value
+    player_value = player_value_input * 10  # TODO: make dynamic
+
+    home_away_input = st.selectbox("match location", tuple(match.keys()))
+    home_away = match[home_away_input]
+
+    player_data = player_position
+    player_data.append(player_value)
+    player_data.append(home_away)
+
+    if st.button("Ok", type="primary"):
+        prediction = data.get_points_prediction(player_data)
+        if prediction:
+            st.caption(
+                f":blue[FPL projected points: {prediction['forecast']}]"
+            )  # TODO: ref
