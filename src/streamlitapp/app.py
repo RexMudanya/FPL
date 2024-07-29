@@ -8,6 +8,7 @@ from data.data import Data
 
 sys.path.insert(0, "..")
 from utils.config import get_config
+from src.analyticsapp import draw_table
 
 CONFIG = get_config()
 data = Data(api_url=CONFIG["api"]["endpoint_url"])
@@ -38,81 +39,9 @@ st.title("Fantasy Premier League Dashboard")
 menu = ["General Overview", "Player Comparison", "Points Prediction"]
 choice = st.sidebar.selectbox("Select a View", menu)
 
-gw_points_table = go.Figure(
-    data=[
-        go.Table(
-            header=dict(
-                values=list(game_week_points[0].keys()),
-                # fill_color='paleturquoise',
-                align="left",
-                line_color="white",
-            ),
-            cells=dict(
-                values=[
-                    list(column)
-                    for column in zip(*[list(idx.values()) for idx in game_week_points])
-                ],
-                # fill_color='lavender',
-                align="left",
-                line_color="white",
-            ),
-        )
-    ]
-)  # TODO: styling updates
-gw_points_table.update_layout(title="Game week points")
-
-gw_points_ownership_table = go.Figure(
-    data=[
-        go.Table(
-            header=dict(
-                values=list(gw_points_ownership[0].keys()),
-                # fill_color='paleturquoise',
-                align="left",
-                line_color="white",
-            ),
-            cells=dict(
-                values=[
-                    list(column)
-                    for column in zip(
-                        *[list(idx.values()) for idx in gw_points_ownership]
-                    )
-                ],
-                # fill_color='lavender',
-                align="left",
-                line_color="white",
-            ),
-        )
-    ]
-)
-gw_points_ownership_table.update_layout(title="Game week points per 90 & ownership")
-
-gw_xg_xa_table = go.Figure(
-    data=[
-        go.Table(
-            header=dict(
-                values=list(gw_xg_xa[0].keys()),
-                # fill_color='paleturquoise',
-                align="left",
-                line_color="white",
-            ),
-            cells=dict(
-                values=[
-                    list(column)
-                    for column in zip(*[list(idx.values()) for idx in gw_xg_xa])
-                ],
-                # fill_color='lavender',
-                align="left",
-                line_color="white",
-            ),
-        )
-    ]
-)
-gw_xg_xa_table.update_layout(title="Game week expected points and assists")
-
-points_comparison = go.Figure()
-points_per_90_comparison = go.Figure()
-expected_goals_comparison = go.Figure()
-expected_assists_comparison = go.Figure()
+gw_points_table = draw_table(game_week_points, "Game week points")
+gw_points_ownership_table = draw_table(gw_points_ownership, "Game week points per 90 & ownership")
+gw_xg_xa_table = draw_table(gw_xg_xa, "Game week expected points and assists")
 
 if choice == "General Overview":
     st.subheader("Top 5 Players by Category")
@@ -123,6 +52,11 @@ if choice == "General Overview":
     st.plotly_chart(gw_xg_xa_table)
 
 elif choice == "Player Comparison":
+    points_comparison = go.Figure()
+    points_per_90_comparison = go.Figure()
+    expected_goals_comparison = go.Figure()
+    expected_assists_comparison = go.Figure()
+
     st.subheader("Player Comparison")
 
     players_selected = st.multiselect(
