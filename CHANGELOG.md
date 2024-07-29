@@ -6,4 +6,8 @@
 
 ### 0.2.0
 
-- [feat] added tests for config and preprocessing , coveragerc 
+- [feat] added tests for config and preprocessing , coveragerc
+
+### 0.3.0
+
+- [feat] interactive analytics dashboard, streamlit

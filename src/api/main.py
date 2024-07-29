@@ -25,6 +25,14 @@ except PydanticUserError as exc:
     assert exc.code == "schema-for-unknown-type"
 
 
+class GameWeekDataIn(BaseModel):
+    game_week: int
+
+
+class PlayerNameIn(BaseModel):
+    player_name: str
+
+
 CONFIG = get_config()
 fpl_data_stats = FPLDataStats(
     CONFIG["training_data"]["git_repo_url"],
@@ -33,11 +41,6 @@ fpl_data_stats = FPLDataStats(
 )
 
 app = FastAPI(debug=True)  # TODO: ref
-
-
-@app.get("/ping")
-def pong():
-    return {"ping": "pong!"}
 
 
 @app.post("/predict", response_model=PointsPrediction, status_code=200)
@@ -65,6 +68,11 @@ def train_model():
     return response_object
 
 
+@app.get("/players", status_code=200)
+def players():
+    return {"players": fpl_data_stats.player_list}
+
+
 @app.get("/goals_scored", status_code=200)
 def goals_scored():
     return {"goal_data": fpl_data_stats.goal_distribution()}
@@ -78,3 +86,43 @@ def assists():
 @app.get("/clean_sheets", status_code=200)
 def clean_sheets():
     return {"clean_sheet_table": fpl_data_stats.clean_sheet_table()}
+
+
+@app.post("/game_week_points", status_code=200)
+def game_weeks_points(payload: GameWeekDataIn):
+    return {"gw_points": fpl_data_stats.get_points_per_gw_board(payload.game_week)}
+
+
+@app.post("/point_ownership", status_code=200)
+def all_player_points_ownership(payload: GameWeekDataIn):
+    return {
+        "player_points_ownership": fpl_data_stats.get_points90_ownership_board(
+            payload.game_week
+        )
+    }
+
+
+@app.post("/player_points_per_gw", status_code=200)
+def player_points_per_gw(payload: PlayerNameIn):
+    return {
+        "points_per_gw": fpl_data_stats.get_player_points_per_gw(payload.player_name)
+    }
+
+
+@app.post("/points_90_ownership", status_code=200)
+def player_points_90_ownership(payload: PlayerNameIn):
+    return {
+        "points_ownership": fpl_data_stats.get_player_points_90_ownership(
+            payload.player_name
+        )
+    }
+
+
+@app.post("/gw_xg_xa", status_code=200)
+def game_week_xg_xa(payload: GameWeekDataIn):
+    return {"gw_xg_xa": fpl_data_stats.get_xg_xa(payload.game_week)}
+
+
+@app.post("/player_xg_xa", status_code=200)
+def player_xg_xa(payload: PlayerNameIn):
+    return {"player_xg_xa": fpl_data_stats.get_player_xg_xa(payload.player_name)}
